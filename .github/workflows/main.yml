@@ -1,4 +1,4 @@
-name: Test on main
+name: Run Tests
 
 on:
   push:
@@ -10,33 +10,28 @@ env:
   TESTS_PATH: 'tests'
 
 jobs:
-  provide_tests_json:
+  test_dirs:
   
     runs-on: windows-latest
 
     steps:
     
       - uses: actions/checkout@v2
-
       - id: set-matrix
         run: echo "::set-output name=matrix::$(Get-ChildItem -Path '${{ env.TESTS_PATH }}' -Recurse -Filter '*.csproj' | Select -Expand Directory | Resolve-Path -Relative | ConvertTo-Json -compress)"
-
-      - name: Check outputs
-        shell: pwsh
-        run: echo ${{ steps.set-matrix.outputs.matrix }}
-
+    
     outputs:
       matrix: ${{ steps.set-matrix.outputs.matrix }}
 
 
-  test_all:
+  tests:
     
-    needs: provide_tests_json
+    needs: test_dirs
     runs-on: windows-latest
     
     strategy:
       matrix:
-        tests: ${{ fromJson(needs.provide_tests_json.outputs.matrix) }}
+        tests: ${{ fromJson(needs.test_dirs.outputs.matrix) }}
 
     steps:
     
