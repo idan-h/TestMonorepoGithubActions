@@ -42,6 +42,11 @@ jobs:
         tests: ${{ fromJson(needs.provide_tests_json.outputs.matrix) }}
 
     steps:
+    
+    - name: Check outputs
+      shell: pwsh
+      run: echo Get-Directory
+      
     - name: Restore dependencies
       run: dotnet restore ${{ matrix.tests }}
     - name: Build
