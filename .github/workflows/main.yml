@@ -52,4 +52,6 @@ jobs:
   tests_success:
     runs-on: ubuntu-latest
     needs: tests
+    steps:
+    - run: echo done
 
