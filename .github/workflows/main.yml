@@ -46,17 +46,10 @@ jobs:
       with:
         dotnet-version: 3.1.x
 
-    - name: Check outputs
-      run: echo $(Get-Location)
-      
-    - name: kuku
-      working-directory: tests
-      run: echo "$(Get-ChildItem | ?{ $_.PSIsContainer } | Select -Expand FullName)"
-      
     - name: Restore dependencies
       run: dotnet restore '${{ matrix.tests }}'
     - name: Build
       run: dotnet build ${{ matrix.tests }} --configuration Release --no-restore
     - name: Test
-      run: dotnet test ${{ matrix.tests }} --no-build --verbosity normal
+      run: dotnet test ${{ matrix.tests }} --configuration Release --no-build --verbosity normal
         
