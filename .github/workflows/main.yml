@@ -42,11 +42,6 @@ jobs:
         tests: ${{ fromJson(needs.provide_tests_json.outputs.matrix) }}
 
     steps:
-    - uses: actions/checkout@v2
-    - name: Setup .NET
-      uses: actions/setup-dotnet@v1
-      with:
-        dotnet-version: 3.1.x
     - name: Restore dependencies
       run: dotnet restore ${{ matrix.tests }}
     - name: Build
