@@ -16,15 +16,17 @@ jobs:
 
     steps:
       - uses: actions/checkout@v2
-      #- name: Setup .NET
-      #  uses: actions/setup-dotnet@v1
-      #  with:
-      #    dotnet-version: 3.1.x
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v1
+        with:
+          dotnet-version: 3.1.x
 
       - id: set-matrix
         run: echo "::set-output name=matrix::$(Get-ChildItem -Path '${{ env.TESTS_PATH }}' -Recurse -Filter '*.csproj' | select -expand fullname | ConvertTo-Json -compress)"
-      - run: echo "$(Get-ChildItem -Path '${{ env.TESTS_PATH }}' -Recurse -Filter '*.csproj' | select -expand fullname | ConvertTo-Json)"
 
+      - name: Check outputs
+        shell: pwsh
+        run: echo ${{ steps.set-matrix.outputs.matrix }}
 
     outputs:
       matrix: ${{ steps.set-matrix.outputs.matrix }}
