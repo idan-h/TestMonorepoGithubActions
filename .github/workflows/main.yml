@@ -15,11 +15,8 @@ jobs:
     runs-on: windows-latest
 
     steps:
+    
       - uses: actions/checkout@v2
-      - name: Setup .NET
-        uses: actions/setup-dotnet@v1
-        with:
-          dotnet-version: 3.1.x
 
       - id: set-matrix
         run: echo "::set-output name=matrix::$(Get-ChildItem -Path '${{ env.TESTS_PATH }}' -Recurse -Filter '*.csproj' | Select -Expand Directory | Resolve-Path -Relative | ConvertTo-Json -compress)"
@@ -43,6 +40,12 @@ jobs:
 
     steps:
     
+    - uses: actions/checkout@v2
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v1
+      with:
+        dotnet-version: 3.1.x
+
     - name: Check outputs
       run: echo $(Get-Location)
       
