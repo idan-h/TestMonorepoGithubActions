@@ -22,7 +22,7 @@ jobs:
           dotnet-version: 3.1.x
 
       - id: set-matrix
-        run: echo "::set-output name=matrix::$(Get-ChildItem -Path '${{ env.TESTS_PATH }}' -Recurse -Filter '*.csproj' | select -expand fullname | ConvertTo-Json -compress)"
+        run: echo "::set-output name=matrix::$(Get-ChildItem -Path '${{ env.TESTS_PATH }}' -Recurse -Filter '*.csproj' | Select -Expand FullName | Resolve-Path -Relative | ConvertTo-Json -compress)"
 
       - name: Check outputs
         shell: pwsh
