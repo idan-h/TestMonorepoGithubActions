@@ -47,4 +47,9 @@ jobs:
       run: dotnet build ${{ matrix.tests }} --configuration Release --no-restore
     - name: Test
       run: dotnet test ${{ matrix.tests }} --configuration Release --no-build --verbosity normal
-        
+      
+      
+  tests_success:
+    runs-on: ubuntu-latest
+    needs: tests
+
