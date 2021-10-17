@@ -50,8 +50,11 @@ jobs:
       
       
   tests_success:
+    if: ${{ always() }}
     runs-on: ubuntu-latest
     needs: tests
     steps:
-    - run: echo done
-
+      - name: Check tests matrix status
+        if: ${{ needs.build.result != 'success' }}
+        run: exit 1
+        
