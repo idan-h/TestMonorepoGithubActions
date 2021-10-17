@@ -22,7 +22,7 @@ jobs:
           dotnet-version: 3.1.x
 
       - id: set-matrix
-        run: echo "::set-output name=matrix::$(vendor/bin/monorepo-builder packages-json --names)"
+        run: echo "hello"
 
     outputs:
       matrix: ${{ steps.set-matrix.outputs.matrix }}
