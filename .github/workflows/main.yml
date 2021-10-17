@@ -47,7 +47,7 @@ jobs:
       run: echo $(Get-Location)
       
     - name: kuku
-      working-directory: ./tests
+#      working-directory: ./tests
       run: echo $(Get-ChildItem -Recurse | ?{ $_.PSIsContainer } | Select-Object FullName)
       
     - name: Restore dependencies
