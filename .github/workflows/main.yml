@@ -22,7 +22,9 @@ jobs:
       #    dotnet-version: 3.1.x
 
       - id: set-matrix
-        run: echo "::set-output name=matrix::Get-ChildItem -Path '${{ env.TESTS_PATH }}' -Recurse -Filter '*.csproj' | select -expand fullname | ConvertTo-Json"
+        run: echo "::set-output name=matrix::$(Get-ChildItem -Path '${{ env.TESTS_PATH }}' -Recurse -Filter '*.csproj' | select -expand fullname | ConvertTo-Json)"
+      - run: echo "$(Get-ChildItem -Path '${{ env.TESTS_PATH }}' -Recurse -Filter '*.csproj' | select -expand fullname | ConvertTo-Json)"
+
 
     outputs:
       matrix: ${{ steps.set-matrix.outputs.matrix }}
