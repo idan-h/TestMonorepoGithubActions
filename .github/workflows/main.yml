@@ -1,0 +1,52 @@
+name: Test on main
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+env:
+  TESTS_PATH: 'tests'
+
+jobs:
+  provide_tests_json:
+  
+    runs-on: windows-latest
+
+    steps:
+      - uses: actions/checkout@v2
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v1
+        with:
+          dotnet-version: 3.1.x
+
+      - id: set-matrix
+        run: echo "::set-output name=matrix::$(vendor/bin/monorepo-builder packages-json --names)"
+
+    outputs:
+      matrix: ${{ steps.set-matrix.outputs.matrix }}
+
+
+  test_all:
+    
+    needs: provide_tests_json
+    runs-on: windows-latest
+    
+    strategy:
+      matrix:
+        tests: ${{ fromJson(needs.provide_tests_json.outputs.matrix) }}
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v1
+      with:
+        dotnet-version: 3.1.x
+    - name: Restore dependencies
+      run: dotnet restore ${{ matrix.tests }}
+    - name: Build
+      run: dotnet build ${{ matrix.tests }} --configuration Release --no-restore
+    - name: Test
+      run: dotnet test ${{ matrix.tests }} --no-build --verbosity normal
+        
