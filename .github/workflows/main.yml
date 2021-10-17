@@ -48,7 +48,7 @@ jobs:
       
     - name: kuku
 #      working-directory: ./tests
-      run: echo $(Get-ChildItem -Recurse | ?{ $_.PSIsContainer } | Select-Object FullName)
+      run: echo "$(Get-ChildItem | ?{ $_.PSIsContainer } | Select -Expand FullName)"
       
     - name: Restore dependencies
       run: dotnet restore '${{ matrix.tests }}'
