@@ -45,9 +45,13 @@ jobs:
     
     - name: Check outputs
       run: echo $(Get-Location)
-    - run: echo $(Get-ChildItem -Directory)
+      
+    - name: kuku
+      working-directory: ./tests
+      run: echo $(Get-ChildItem -Directory)
       
     - name: Restore dependencies
+      working-directory: ./tests
       run: dotnet restore ${{ matrix.tests }}
     - name: Build
       run: dotnet build ${{ matrix.tests }} --configuration Release --no-restore
