@@ -31,14 +31,9 @@ jobs:
 
       - id: set-matrix
         run: |
-          echo "$json" | jq -c '[ .[] | select(endswith("/.version")) ]'
-          echo 1
+          json='["src/ClassLibrary1/.version","src/ClassLibrary2/.version","src/ClassLibrary1/abc","src/ClassLibrary2/dfg"]'
           var=$(echo "$json" | jq -c '[ .[] | select(endswith("/.version")) ]')
-          echo 2
-          echo $var
-          echo 3
           echo "::set-output name=matrix::$(echo $var)"
-          echo 4
         
       - run: echo ${{ steps.set-matrix.outputs.matrix }}
       
