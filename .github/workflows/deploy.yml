@@ -35,7 +35,7 @@ jobs:
         run: |
           json='${{ steps.files.outputs.all }}'
           var=$(echo "$json" | jq -c '[ .[] | select(endswith("/.version")) ]')
-          echo "::set-output name=matrix::$(echo $var)"
+          echo "::set-output name=matrix::$(echo $var | sed -e 's@/.version@@g')"
         
       - run: echo ${{ steps.set-matrix.outputs.matrix }}
       
@@ -59,19 +59,12 @@ jobs:
       uses: actions/setup-dotnet@v1
       with:
         dotnet-version: 3.1.x
-    
-    - id: path
-      name: Create Path Variable
-      run: |
-        $var="`"$('${{ matrix.changes }}'.TrimEnd('./version'))`""
-        echo "::set-output name=path::$(echo $var)"
-        
       
-    - run: echo ${{ steps.path.outputs.path }}
+    - run: echo ${{ matrix.changes }}
       
     - name: Restore dependencies
-      run: dotnet restore ${{ steps.path.outputs.path }}
+      run: dotnet restore "${{ matrix.changes }}"
       
     - name: Build
-      run: dotnet build ${{ steps.path.outputs.path }} --configuration Release --no-restore
+      run: dotnet build "${{ matrix.changes }}" --configuration Release --no-restore
     
