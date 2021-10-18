@@ -60,13 +60,18 @@ jobs:
       with:
         dotnet-version: 3.1.x
     
-    - name: Create Path Variable
-      run: $path = "`"$('${{ matrix.changes }}'.TrimEnd('./version'))`""
+    - id: path
+      name: Create Path Variable
+      run: |
+        $var="`"$('${{ matrix.changes }}'.TrimEnd('./version'))`""
+        echo "::set-output name=path::$(echo $var)"
+        
       
-    - run: echo $path
+    - run: echo ${{ steps.path.outputs.path }}
       
     - name: Restore dependencies
-      run: dotnet restore $path
+      run: dotnet restore ${{ steps.path.outputs.path }}
+      
     - name: Build
-      run: dotnet build $path --configuration Release --no-restore
+      run: dotnet build ${{ steps.path.outputs.path }} --configuration Release --no-restore
     
