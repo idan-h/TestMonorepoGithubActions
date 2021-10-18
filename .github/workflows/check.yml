@@ -26,8 +26,8 @@ jobs:
       - uses: actions/checkout@v2
 
       - run: |
-          json='[{"genre":"deep house"}, {"genre": "progressive house"}, {"genre": "dubstep"}]'
-          echo "$json" | jq -c '.[] | select(.genre | contains("house"))'
+          json='["src/ClassLibrary1/.version","src/ClassLibrary2/.version","src/ClassLibrary1/abc","src/ClassLibrary2/dfg"]'
+          echo "$json" | jq -c '.[] | select(contains("/.version"))'
 
       # Runs a single command using the runners shell
       - name: Run a one-line script
