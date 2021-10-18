@@ -28,10 +28,14 @@ jobs:
           echo ${{ steps.files.outputs.all }}
       
       - run: |
-          echo '${{ steps.files.outputs.all }}' | jq -c '[ .[] | select(endswith("/.version")) ]'
+          json='${{ steps.files.outputs.all }}'
+          echo '$json' | jq -c '[ .[] | select(endswith("/.version")) ]'
           
       - id: set-matrix
-        run: echo "::set-output name=matrix::$('${{ steps.files.outputs.all }}' | jq -c '[ .[] | select(endswith("'"'"/.version"'"'")) ]')"
+        run: |
+          json='${{ steps.files.outputs.all }}'
+          var=$(echo "$json" | jq -c '[ .[] | select(endswith("/.version")) ]')
+          echo "::set-output name=matrix::$(echo $var)"
         
       - run: echo ${{ steps.set-matrix.outputs.matrix }}
       
