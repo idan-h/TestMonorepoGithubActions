@@ -32,7 +32,7 @@ jobs:
       - id: set-matrix
         run: |
           json='["src/ClassLibrary1/.version","src/ClassLibrary2/.version","src/ClassLibrary1/abc","src/ClassLibrary2/dfg"]'
-          echo '$json' | jq -c '[ .[] | select(endswith("/.version")) ]'
+          echo "$json" | jq -c '[ .[] | select(endswith("/.version")) ]'
           var=('$json' | jq -c '[ .[] | select(endswith("/.version")) ]')
           echo $var
           echo "::set-output name=matrix::$($var)"
