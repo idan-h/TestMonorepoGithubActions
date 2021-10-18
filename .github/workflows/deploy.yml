@@ -6,9 +6,13 @@ on:
   push:
     branches: [ main ]
     paths: [ 'src/**/.version' ]
-  
-  workflow_dispatch:
 
+
+env:
+  PACKAGE_OUTPUT_DIRECTORY: ${{ github.workspace }}\output
+  NUGET_SOURCE_URL: 'https://nuget.pkg.github.com/${{ secrets.NUGET_USER }}/index.json'
+ 
+ 
 jobs:
 
   get_changes:
@@ -17,7 +21,7 @@ jobs:
 
     steps:
       
-      - uses: actions/checkout@v2
+      #- uses: actions/checkout@v2
     
       - id: files
         uses: jitterbit/get-changed-files@v1
@@ -35,7 +39,7 @@ jobs:
         run: |
           json='${{ steps.files.outputs.all }}'
           var=$(echo "$json" | jq -c '[ .[] | select(endswith("/.version")) ]')
-          echo "::set-output name=matrix::$(echo $var)"
+          echo "::set-output name=matrix::$(echo $var | sed -e 's@/.version@@g')"
         
       - run: echo ${{ steps.set-matrix.outputs.matrix }}
       
@@ -50,7 +54,7 @@ jobs:
     
     strategy:
       matrix:
-        changes: ${{ fromJson(needs.get_changes.outputs.matrix) }}
+        project: ${{ fromJson(needs.get_changes.outputs.matrix) }}
 
     steps:
     
@@ -59,19 +63,24 @@ jobs:
       uses: actions/setup-dotnet@v1
       with:
         dotnet-version: 3.1.x
-    
-    - id: path
-      name: Create Path Variable
+            
+    - id: version
+      name: Get Version
       run: |
-        $var="`"$('${{ matrix.changes }}'.TrimEnd('./version'))`""
-        echo "::set-output name=path::$(echo $var)"
-        
-      
-    - run: echo ${{ steps.path.outputs.path }}
-      
-    - name: Restore dependencies
-      run: dotnet restore ${{ steps.path.outputs.path }}
+        $var=$(Get-Content -Path "${{ matrix.project }}/.version")
+        echo "::set-output name=version::$(echo $var)"
+    
+    - name: Restore
+      run: dotnet restore "${{ matrix.project }}"
       
     - name: Build
-      run: dotnet build ${{ steps.path.outputs.path }} --configuration Release --no-restore
+      run: dotnet build "${{ matrix.project }}" --configuration Release --no-restore
+      
+    - name: Pack
+      run: dotnet pack "${{ matrix.project }}" --no-restore --no-build --configuration Release --include-symbols -p:PackageVersion=${{ steps.version.outputs.version }} --output "${{ env.PACKAGE_OUTPUT_DIRECTORY }}"
+
+    - name: Push
+      run: dotnet nuget push "${{ env.PACKAGE_OUTPUT_DIRECTORY }}\*.nupkg" -k ${{ secrets.NUGET_AUTH_TOKEN }} -s ${{ env.NUGET_SOURCE_URL }}
+      
+      
     
