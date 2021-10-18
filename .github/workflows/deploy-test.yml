@@ -8,9 +8,7 @@ on:
 
 env:
   PACKAGE_OUTPUT_DIRECTORY: ${{ github.workspace }}\output
-  NUGET_SOURCE_URL: 'https://nuget.pkg.github.com/${{ secrets.NUGET_USER }}/index.json'
- 
- 
+  
 jobs:
  
   
