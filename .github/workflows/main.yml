@@ -18,8 +18,11 @@ jobs:
     
       - uses: actions/checkout@v2
       - id: set-matrix
-        run: echo "::set-output name=matrix::$(Get-ChildItem -Path '${{ env.TESTS_PATH }}' -Recurse -Filter '*.csproj' | Select -Expand Directory | Resolve-Path -Relative | ConvertTo-Json -compress)"
-    
+        run: echo "::set-output name=matrix::$(ConvertTo-Json -Compress @(Get-ChildItem -Path '${{ env.TESTS_PATH }}' -Recurse -Filter '*.csproj' | Select -Expand Directory | Resolve-Path -Relative))"
+      
+      - name: Check outputs
+        run: echo ${{ steps.set-matrix.outputs.matrix }}
+          
     outputs:
       matrix: ${{ steps.set-matrix.outputs.matrix }}
 
