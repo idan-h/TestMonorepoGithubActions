@@ -29,7 +29,7 @@ jobs:
       
       - run: |
           json='${{ steps.files.outputs.all }}'
-          echo '$json' | jq -c '[ .[] | select(endswith("/.version")) ]'
+          echo "$json" | jq -c '[ .[] | select(endswith("/.version")) ]'
           
       - id: set-matrix
         run: |
