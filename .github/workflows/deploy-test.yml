@@ -39,7 +39,7 @@ jobs:
       run: dotnet build "src/ClassLibrary1" --configuration Release --no-restore
       
     - name: Pack
-      run: dotnet pack "src/ClassLibrary1" --no-restore --no-build --configuration Release --include-symbols -p:PackageVersion=${{ steps.version.outputs.version }} --output "${{ env.PACKAGE_OUTPUT_DIRECTORY }}"
+      run: dotnet pack "src/ClassLibrary1" --no-restore --no-build --configuration Release -p:PackageVersion=${{ steps.version.outputs.version }} --output "${{ env.PACKAGE_OUTPUT_DIRECTORY }}"
 
     - name: Push
       run: |
