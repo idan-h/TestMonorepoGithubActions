@@ -34,7 +34,8 @@ jobs:
       - id: set-matrix
         run: |
           json='${{ steps.files.outputs.all }}'
-          echo "::set-output name=matrix::$('$json' | jq -c '[ .[] | select(endswith("'"'"/.version"'"'")) ]')"
+          var=$(echo "$json" | jq -c '[ .[] | select(endswith("/.version")) ]')
+          echo "::set-output name=matrix::$(echo $var)"
         
       - run: echo ${{ steps.set-matrix.outputs.matrix }}
       
