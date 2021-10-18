@@ -11,29 +11,56 @@ on:
 
 jobs:
 
-  build:
+  get_changes:
 
     runs-on: ubuntu-latest
 
     steps:
       
       - uses: actions/checkout@v2
-
+    
       - id: files
         uses: jitterbit/get-changed-files@v1
         with:
           format: 'json'
+          
       - run: |
           echo ${{ steps.files.outputs.all }}
       
       - run: |
-          json='[{"genre":"deep house"}, {"genre": "progressive house"}, {"genre": "dubstep"}]'
-          echo "$json" | jq -c '.[] | select(.genre | contains("house"))'
+          echo '${{ steps.files.outputs.all }}' | jq -c '[ .[] | select(endswith("/.version")) ]'
+          
+      - id: set-matrix
+        run: echo "::set-output name=matrix::$('${{ steps.files.outputs.all }}' | jq -c '[ .[] | select(endswith("'"'"/.version"'"'")) ]')"
+        
+    outputs:
+      matrix: ${{ steps.set-matrix.outputs.matrix }}
+  
+  
+  deploy:
+    
+    needs: get_changes
+    runs-on: windows-latest
+    
+    strategy:
+      matrix:
+        changes: ${{ fromJson(needs.get_changes.outputs.matrix) }}
 
-      - name: Run a one-line script
-        run: echo Hello, world!
-
-      - name: Run a multi-line script
-        run: |
-          echo Add other actions to build,
-          echo test, and deploy your project.
+    steps:
+    
+    - uses: actions/checkout@v2
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v1
+      with:
+        dotnet-version: 3.1.x
+    
+    - name: Create Path Variable
+      run: $path = "`"$('${{ matrix.changes }}'.TrimEnd('./version'))`""
+      
+    - run: echo $path
+      
+    - name: Restore dependencies
+      run: dotnet restore $path
+    - name: Build
+      run: dotnet build $path --configuration Release --no-restore
+    
