@@ -25,6 +25,10 @@ jobs:
           format: 'json'
       - run: |
           echo ${{ steps.files.outputs.all }}
+      
+      - run: |
+          json='[{"genre":"deep house"}, {"genre": "progressive house"}, {"genre": "dubstep"}]'
+          echo "$json" | jq -c '.[] | select(.genre | contains("house"))'
 
       - name: Run a one-line script
         run: echo Hello, world!
