@@ -35,7 +35,7 @@ jobs:
           echo "$json" | jq -c '[ .[] | select(endswith("/.version")) ]'
           var=$("$json" | jq -c '[ .[] | select(endswith("/.version")) ]')
           echo $var
-          echo "::set-output name=matrix::$($var)"
+          echo "::set-output name=matrix::$var"
         
       - run: echo ${{ steps.set-matrix.outputs.matrix }}
       
