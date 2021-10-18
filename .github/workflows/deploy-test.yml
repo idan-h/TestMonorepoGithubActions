@@ -1,0 +1,49 @@
+
+name: Deploy
+
+on:
+  
+  workflow_dispatch:
+
+
+env:
+  PACKAGE_OUTPUT_DIRECTORY: ${{ github.workspace }}\output
+  NUGET_SOURCE_URL: 'https://nuget.pkg.github.com/${{ secrets.NUGET_USER }}/index.json'
+ 
+ 
+jobs:
+ 
+  
+  deploy:
+    
+    runs-on: windows-latest
+
+    steps:
+    
+    - uses: actions/checkout@v2
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v1
+      with:
+        dotnet-version: 3.1.x
+            
+    - id: version
+      name: Get Version
+      run: |
+        $var=$(Get-Content -Path "src/ClassLibrary1/.version")
+        echo "::set-output name=version::$(echo 0.0.5)"
+      
+    - name: Restore
+      run: dotnet restore "src/ClassLibrary1"
+      
+    - name: Build
+      run: dotnet build "src/ClassLibrary1" --configuration Release --no-restore
+      
+    - name: Pack
+      run: dotnet pack "src/ClassLibrary1" --no-restore --no-build --configuration Release --include-symbols -p:PackageVersion=${{ steps.version.outputs.version }} --output "${{ env.PACKAGE_OUTPUT_DIRECTORY }}"
+
+    - name: Push
+      run: |
+        ./package/gpr/gpr push "${{ env.PACKAGE_OUTPUT_DIRECTORY }}\*.nupkg" -k ${{ secrets.NUGET_AUTH_TOKEN }} --repository ${{ secrets.NUGET_USER }}/${{ github.event.repository.name }}
+      
+      
+    
