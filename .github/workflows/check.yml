@@ -34,7 +34,7 @@ jobs:
           json='["src/ClassLibrary1/.version","src/ClassLibrary2/.version","src/ClassLibrary1/abc","src/ClassLibrary2/dfg"]'
           echo "$json" | jq -c '[ .[] | select(endswith("/.version")) ]'
           echo 1
-          var="$("$json" | jq -c '[ .[] | select(endswith("/.version")) ]')"
+          var=$(echo "$json" | jq -c '[ .[] | select(endswith("/.version")) ]')
           echo 2
           echo $var
           echo 3
