@@ -27,7 +27,7 @@ jobs:
 
       - run: |
           json='["src/ClassLibrary1/.version","src/ClassLibrary2/.version","src/ClassLibrary1/abc","src/ClassLibrary2/dfg"]'
-          echo "$json" | jq -c '.[] | select(contains("/.version"))'
+          echo "$json" | jq -c '[ .[] | select(endswith("/.version")) ]'
 
       # Runs a single command using the runners shell
       - name: Run a one-line script
