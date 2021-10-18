@@ -19,6 +19,13 @@ jobs:
       
       - uses: actions/checkout@v2
 
+      - id: files
+        uses: jitterbit/get-changed-files@v1
+        with:
+          format: 'json'
+      - run: |
+          echo ${{ steps.files.outputs.all }}
+
       - name: Run a one-line script
         run: echo Hello, world!
 
