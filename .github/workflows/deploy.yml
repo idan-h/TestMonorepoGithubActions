@@ -1,5 +1,5 @@
 
-name: Deploy
+name: Deploy Nuget To Github Packages
 
 on:
   
@@ -9,9 +9,7 @@ on:
 
 
 env:
-  PACKAGE_OUTPUT_DIRECTORY: ${{ github.workspace }}\output
-  NUGET_SOURCE_URL: 'https://nuget.pkg.github.com/${{ secrets.NUGET_USER }}/index.json'
- 
+  PACKAGE_OUTPUT_DIRECTORY: ${{ github.workspace }}\output 
  
 jobs:
 
@@ -77,7 +75,7 @@ jobs:
       run: dotnet build "${{ matrix.project }}" --configuration Release --no-restore
       
     - name: Pack
-      run: dotnet pack "${{ matrix.project }}" --no-restore --no-build --configuration Release --include-symbols -p:PackageVersion=${{ steps.version.outputs.version }} --output "${{ env.PACKAGE_OUTPUT_DIRECTORY }}"
+      run: dotnet pack "${{ matrix.project }}" --no-restore --no-build --configuration Release -p:PackageVersion=${{ steps.version.outputs.version }} --output "${{ env.PACKAGE_OUTPUT_DIRECTORY }}"
 
     - name: Push
       run: |
