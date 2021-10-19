@@ -44,13 +44,13 @@ jobs:
     - name: Setup .NET
       uses: actions/setup-dotnet@v1
       with:
-        dotnet-version: ${{ DOTNET_VERSION }}
+        dotnet-version: ${{ env.DOTNET_VERSION }}
 
     - uses: actions/cache@v2
       with:
         path:
           ~/.nuget/packages
-        key: ${{ runner.os }}-nuget-${{ DOTNET_VERSION }}-${{ hashFiles('**/packages.lock.json') }}
+        key: ${{ runner.os }}-nuget-${{ env.DOTNET_VERSION }}-${{ hashFiles('**/packages.lock.json') }}
         restore-keys: |
           ${{ runner.os }}-nuget-
 
