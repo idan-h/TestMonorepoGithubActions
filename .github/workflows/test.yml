@@ -8,6 +8,7 @@ on:
 
 env:
   TESTS_PATH: 'tests'
+  DOTNET_VERSION: 3.1.414
 
 jobs:
 
@@ -43,7 +44,15 @@ jobs:
     - name: Setup .NET
       uses: actions/setup-dotnet@v1
       with:
-        dotnet-version: 3.1.414
+        dotnet-version: ${{ DOTNET_VERSION }}
+
+    - uses: actions/cache@v2
+      with:
+        path:
+          ~/.nuget/packages
+        key: ${{ runner.os }}-nuget-${{ DOTNET_VERSION }}-${{ hashFiles('**/packages.lock.json') }}
+        restore-keys: |
+          ${{ runner.os }}-nuget-
 
     - name: Restore dependencies
       run: dotnet restore '${{ matrix.tests }}'
