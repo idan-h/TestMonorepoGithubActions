@@ -3,11 +3,14 @@ name: Run Tests
 on:
   pull_request:
     branches: [ main ]
+    
+  workflow_dispatch:
 
 env:
   TESTS_PATH: 'tests'
 
 jobs:
+
   test_dirs:
   
     runs-on: windows-latest
