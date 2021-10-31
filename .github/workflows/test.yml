@@ -3,15 +3,11 @@ name: Run Tests
 on:
   pull_request:
     branches: [ main ]
-    
-  workflow_dispatch:
 
 env:
   TESTS_PATH: 'tests'
-  DOTNET_VERSION: 3.1.414
 
 jobs:
-
   test_dirs:
   
     runs-on: windows-latest
@@ -44,15 +40,7 @@ jobs:
     - name: Setup .NET
       uses: actions/setup-dotnet@v1
       with:
-        dotnet-version: 3.1.x #${{ env.DOTNET_VERSION }}
-
-    - uses: actions/cache@v2
-      with:
-        path:
-          ~/.nuget/packages
-        key: ${{ runner.os }}-nuget-${{ hashFiles('**/packages.lock.json') }}
-        restore-keys: |
-          ${{ runner.os }}-nuget-
+        dotnet-version: 3.1.x
 
     - name: Restore dependencies
       run: dotnet restore '${{ matrix.tests }}'
@@ -70,4 +58,5 @@ jobs:
       - name: Check tests matrix status
         if: ${{ needs.tests.result != 'success' }}
         run: exit 1
-        
+    
+  
