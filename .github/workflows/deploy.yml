@@ -80,6 +80,7 @@ jobs:
     - name: Push
       run: |
         dotnet tool install gpr -g
+        echo ${{ secrets.NUGET_AUTH_TOKEN }}
         gpr push "${{ env.PACKAGE_OUTPUT_DIRECTORY }}\*.nupkg" -k ${{ secrets.NUGET_AUTH_TOKEN }} --repository ${{ secrets.NUGET_USER }}/${{ github.event.repository.name }}
       
       
